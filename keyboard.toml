@@ -1,0 +1,50 @@
+[keyboard]
+name = "piantor-rmk"
+product_name = "piantor-rmk"
+vendor_id = 0x4c4b
+product_id = 0x4643
+manufacturer = "RMK"
+chip = "rp2040"
+
+[layout]
+rows = 4
+cols = 3
+layers = 1
+keymap = [
+    [
+        ["A", "B", "C"],
+        ["Kc1", "Kc2", "Kc3"],
+        ["LCtrl", "MO(1)", "LShift"],
+        ["OSL(1)", "LT(2, Kc9)", "LM(1, LShift | LGui)"]
+    ],
+]
+
+[storage]
+
+[split]
+connection = "serial"
+
+[split.central]
+rows = 2
+cols = 2
+row_offset = 0
+col_offset = 0
+serial = [
+    { instance = "UART0", tx_pin = "PIN_0", rx_pin = "PIN_1" },
+    # { instance = "UART1", tx_pin = "PIN_4", rx_pin = "PIN_5" },
+]
+[split.central.matrix]
+matrix_type = "normal"
+input_pins = ["PIN_7", "PIN_8"]
+output_pins = ["PIN_11", "PIN_12"]
+
+[[split.peripheral]]
+rows = 2
+cols = 1
+row_offset = 2
+col_offset = 2
+serial = [{ instance = "UART0", tx_pin = "PIN_0", rx_pin = "PIN_1" }]
+[split.peripheral.matrix]
+matrix_type = "normal"
+input_pins = ["PIN_7", "PIN_8"]
+output_pins = ["PIN_11"]
