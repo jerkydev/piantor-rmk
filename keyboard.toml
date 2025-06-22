@@ -8,43 +8,43 @@ chip = "rp2040"
 
 [layout]
 rows = 4
-cols = 3
+cols = 10
 layers = 1
 keymap = [
     [
-        ["A", "B", "C"],
-        ["Kc1", "Kc2", "Kc3"],
-        ["LCtrl", "MO(1)", "LShift"],
-        ["OSL(1)", "LT(2, Kc9)", "LM(1, LShift | LGui)"]
+        ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+        ["A", "S", "D", "F", "G", "H", "J", "K", "L", "-"],
+        ["Z", "X", "C", "V", "B", "N", "M", "-", "-", "-"],
+        ["-", "-", "-", "Space", "-", "-", "-", "-", "-", "-"]
     ],
 ]
 
 [storage]
+clear_storage = true
 
 [split]
 connection = "serial"
 
 [split.central]
-rows = 2
-cols = 2
+rows = 4
+cols = 5
 row_offset = 0
 col_offset = 0
 serial = [
     { instance = "UART0", tx_pin = "PIN_0", rx_pin = "PIN_1" },
-    # { instance = "UART1", tx_pin = "PIN_4", rx_pin = "PIN_5" },
 ]
 [split.central.matrix]
 matrix_type = "normal"
-input_pins = ["PIN_7", "PIN_8"]
-output_pins = ["PIN_11", "PIN_12"]
+input_pins = ["PIN_7", "PIN_8", "PIN_9", "PIN_10"]
+output_pins = ["PIN_12", "PIN_13", "PIN_14", "PIN_15", "PIN_16"]
 
 [[split.peripheral]]
-rows = 2
-cols = 1
-row_offset = 2
-col_offset = 2
+rows = 4
+cols = 5
+row_offset = 0
+col_offset = 0
 serial = [{ instance = "UART0", tx_pin = "PIN_0", rx_pin = "PIN_1" }]
 [split.peripheral.matrix]
 matrix_type = "normal"
-input_pins = ["PIN_7", "PIN_8"]
-output_pins = ["PIN_11"]
+input_pins = ["PIN_7", "PIN_8", "PIN_9", "PIN_10"]
+output_pins = ["PIN_12", "PIN_13", "PIN_14", "PIN_15", "PIN_16"]
