@@ -13,8 +13,8 @@ layers = 4
 keymap = [
     [
         ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
-        ["MT(A, LCtrl)", "MT(S, LAlt)", "MT(D, LShift)", "MT(F, LGui)", "G", "H", "MT(J, LGui)", "MT(K, LShift)", "MT(L, LAlt)", "MT(;, LCtrl)"],
-        ["Z", "X", "C", "V", "B", "N", "M", ",", ".", "/"],
+        ["MT(A, LCtrl)", "MT(S, LAlt)", "MT(D, LShift)", "MT(F, LGui)", "G", "H", "MT(J, LGui)", "MT(K, LShift)", "MT(L, LAlt)", "MT(Semicolon, LCtrl)"],
+        ["Z", "X", "C", "V", "B", "N", "M", "Comma", "Dot", "Slash"],
         ["No", "No", "_", "Space", "MO(1)", "MO(2)", "MO(3)", "_", "No", "No"]
     ],
     [
@@ -32,7 +32,7 @@ keymap = [
     [
         ["MediaPrevTrack", "MediaPlayPause", "MediaNextTrack", "AudioVolDown", "AudioVolUp", "Escape", "CapsLock", "PageUp", "Backspace", "Delete"],
         ["_", "_", "_", "_", "_", "Left", "Down", "Up", "Right", "Enter"],
-        ["_", "_", "_", "BrightnessDown", "BrightnessUp", "Home", "Tab", "PageDown", "End", "_"],
+        ["Bootloader", "_", "_", "BrightnessDown", "BrightnessUp", "Home", "Tab", "PageDown", "End", "_"],
         ["No", "No", "_", "_", "_", "_", "_", "_", "No", "No"]
     ],
     # [
