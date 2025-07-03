@@ -1886,9 +1886,9 @@ dependencies = [
 
 [[package]]
 name = "rmk"
-version = "0.7.3"
+version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c12ba00ff09f33d3ae4801da66215b2d43e805141e89aabc468f19efe988a4a4"
+checksum = "a7b891964c5dbe93fb90067c8eb257bc6ef6ee7215cecd76a24b177cdb36055d"
 dependencies = [
  "bitfield-struct",
  "bt-hci",
@@ -1935,9 +1935,9 @@ dependencies = [
 
 [[package]]
 name = "rmk-config"
-version = "0.5.2"
+version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f76f18e9e1943d362580be60fcd9436cd0a028285c50eb3bfd4d9b6230272b8f"
+checksum = "dd96dfc933a3e60e331c03be59db11773c33c0f3b5394cbce8ec98d60f9c4340"
 dependencies = [
  "cargo_toml",
  "config",
@@ -1953,9 +1953,9 @@ dependencies = [
 
 [[package]]
 name = "rmk-macro"
-version = "0.6.3"
+version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b2818b3620d136a2a8819bed834fa1cc6b2e37f0dda00c503251f386b2364091"
+checksum = "1702b8513db0802b2196408158ecaadcbe7e191c0ec1c7b59dbccf4a8013fa05"
 dependencies = [
  "cargo_toml",
  "darling",
@@ -2394,9 +2394,9 @@ checksum = "343e926fc669bc8cde4fa3129ab681c63671bae288b1f1081ceee6d9d37904fc"
 
 [[package]]
 name = "trouble-host"
-version = "0.2.0"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2f759a3da7d8501bf4be7a11d0754f1da3d2bad226d64cdad9314cec00288fbc"
+checksum = "a46c53d297c6d0556fc510cddf5446eada88db23735705d3c071cb42c43783b8"
 dependencies = [
  "aes",
  "bt-hci",
