@@ -52,6 +52,9 @@ enabled = false
 [dependency]
 defmt_log = false
 
+[rmk]
+debounce_time = 60
+
 [split]
 connection = "serial"
 
@@ -60,7 +63,7 @@ rows = 4
 cols = 5
 row_offset = 0
 col_offset = 0
-serial = [{ instance = "PIO0", tx_pin = "PIN_1", rx_pin = "PIN_1" }]
+serial = [{ instance = "PIO0", tx_pin = "PIN_0", rx_pin = "PIN_1" }]
 [split.central.matrix]
 matrix_type = "normal"
 input_pins = ["PIN_7", "PIN_8", "PIN_9", "PIN_10"]
@@ -71,7 +74,7 @@ rows = 4
 cols = 5
 row_offset = 0
 col_offset = 5
-serial = [{ instance = "PIO0", tx_pin = "PIN_1", rx_pin = "PIN_1" }]
+serial = [{ instance = "PIO0", tx_pin = "PIN_1", rx_pin = "PIN_0" }]
 [split.peripheral.matrix]
 matrix_type = "normal"
 input_pins = ["PIN_7", "PIN_8", "PIN_9", "PIN_10"]
