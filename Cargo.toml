@@ -10,7 +10,7 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-rmk = { version = "0.7.4", default-features = false, features = ["split", "rp2040_bl", "rp2040_pio", "usb_log", "col2row"] }
+rmk = { git = "https://github.com/HaoboGu/rmk.git", branch="fix/pio_serial", default-features = false, features = ["split", "rp2040_bl", "rp2040_pio", "usb_log", "col2row"] }
 embassy-time = { version = "0.4" }
 embassy-rp = { version = "0.4", features = [
     "rp2040",

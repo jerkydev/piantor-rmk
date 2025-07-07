@@ -52,9 +52,6 @@ enabled = false
 [dependency]
 defmt_log = false
 
-[rmk]
-debounce_time = 60
-
 [split]
 connection = "serial"
 
