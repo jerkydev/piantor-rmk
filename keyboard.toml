@@ -15,27 +15,35 @@ keymap = [
         ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
         ["MT(A, LCtrl)", "MT(S, LAlt)", "MT(D, LShift)", "MT(F, LGui)", "G", "H", "MT(J, LGui)", "MT(K, LShift)", "MT(L, LAlt)", "MT(Semicolon, LCtrl)"],
         ["Z", "X", "C", "V", "B", "N", "M", "Comma", "Dot", "Slash"],
-        ["No", "No", "_", "Space", "MO(1)", "MO(1)", "MO(2)", "_", "No", "No"]
+        ["No", "No", "No", "Space", "MO(1)", "MO(1)", "MO(2)", "No", "No", "No"]
     ],
     [
         ["WM(1, LShift)", "WM(2, LShift)", "WM(3, LShift)", "WM(4, LShift)", "WM(5, LShift)", "WM(6, LShift)", "WM(7, LShift)", "WM(8, LShift)", "WM(9, LShift)", "WM(0, LShift)"],
         ["MT(1, LCtrl)", "MT(2, LAlt)", "MT(3, LShift)", "MT(4, LGui)", "5", "6", "MT(7, LGui)", "MT(8, LShift)", "MT(9, LAlt)", "MT(0, LCtrl)"],
         ["F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10"],
-        ["No", "No", "_", "_", "_", "F11", "F12", "_", "No", "No"]
+        ["No", "No", "No", "No", "_", "F11", "F12", "No", "No", "No"]
     ],
     [
         ["MediaPrevTrack", "MediaPlayPause", "MediaNextTrack", "AudioVolDown", "AudioVolUp", "Escape", "CapsLock", "PageUp", "Backspace", "Delete"],
-        ["_", "_", "_", "_", "_", "Left", "Down", "Up", "Right", "Enter"],
-        ["_", "_", "_", "BrightnessDown", "BrightnessUp", "Home", "Tab", "PageDown", "End", "_"],
-        ["No", "No", "Bootloader", "_", "_", "_", "_", "_", "No", "No"]
+        ["LCtrl", "LAlt", "LShift", "LGui", "No", "Left", "Down", "Up", "Right", "Enter"],
+        ["No", "No", "No", "BrightnessDown", "BrightnessUp", "Home", "Tab", "PageDown", "End", "No"],
+        ["No", "No", "Bootloader", "No", "No", "No", "_", "No", "No", "No"]
     ],
     # [
-    #     ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_"],
-    #     ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_"],
-    #     ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_"],
-    #     ["No", "No", "_", "_", "_", "_", "_", "_", "No", "No"]
+    #     ["No", "No", "No", "No", "No", "No", "No", "No", "No", "No"],
+    #     ["No", "No", "No", "No", "No", "No", "No", "No", "No", "No"],
+    #     ["No", "No", "No", "No", "No", "No", "No", "No", "No", "No"],
+    #     ["No", "No", "No", "No", "No", "No", "No", "No", "No", "No"]
     # ],
 ]
+
+[behavior.combo]
+timeout = "150ms"
+combos = [
+  { actions = ["E", "R"], output = "-" },
+  { actions = ["R", "T"], output = "=" },
+]
+
 
 [behavior]
 tap_hold = { enable_hrm = true, prior_idle_time = "80ms", hold_timeout = "200ms", post_wait_time = "0ms", permissive_hold = true, chordal_hold = true}
