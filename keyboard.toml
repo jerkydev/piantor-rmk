@@ -15,7 +15,7 @@ keymap = [
         ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
         ["MT(A, LCtrl)", "MT(S, LAlt)", "MT(D, LShift)", "MT(F, LGui)", "G", "H", "MT(J, LGui)", "MT(K, LShift)", "MT(L, LAlt)", "MT(Semicolon, LCtrl)"],
         ["Z", "X", "C", "V", "B", "N", "M", "Comma", "Dot", "Slash"],
-        ["No", "No", "No", "Space", "LT(1, -)", "LT(1, =)", "LT(2, ')", "No", "No", "No"]
+        ["No", "No", "No", "Space", "MO(1)", "MO(1)", "MO(2)", "No", "No", "No"]
     ],
     [
         ["WM(1, LShift)", "WM(2, LShift)", "WM(3, LShift)", "WM(4, LShift)", "WM(5, LShift)", "WM(6, LShift)", "WM(7, LShift)", "WM(8, LShift)", "WM(9, LShift)", "WM(0, LShift)"],
@@ -36,6 +36,14 @@ keymap = [
     #     ["No", "No", "No", "No", "No", "No", "No", "No", "No", "No"]
     # ],
 ]
+
+[behavior.combo]
+timeout = "150ms"
+combos = [
+  { actions = ["E", "R"], output = "-" },
+  { actions = ["R", "T"], output = "=" },
+]
+
 
 [behavior]
 tap_hold = { enable_hrm = true, prior_idle_time = "80ms", hold_timeout = "200ms", post_wait_time = "0ms", permissive_hold = true, chordal_hold = true}
