@@ -9,14 +9,13 @@ mod vial;
 
 use embassy_executor::Spawner;
 use embassy_rp::bind_interrupts;
-use embassy_rp::flash::{Async, Flash};
 use embassy_rp::gpio::{Input, Output};
 use embassy_rp::peripherals::{PIO0, USB};
 use embassy_rp::usb::{Driver, InterruptHandler};
 use embassy_time::Duration;
 use rmk::combo::Combo;
 use rmk::channel::EVENT_CHANNEL;
-use rmk::config::{BehaviorConfig, CombosConfig, ControllerConfig, KeyboardUsbConfig, RmkConfig, StorageConfig, TapHoldConfig, VialConfig};
+use rmk::config::{BehaviorConfig, CombosConfig, ControllerConfig, KeyboardUsbConfig, RmkConfig, TapHoldConfig, VialConfig};
 use rmk::debounce::default_debouncer::DefaultDebouncer;
 use rmk::futures::future::join4;
 use rmk::input_device::Runnable;
@@ -25,7 +24,7 @@ use rmk::light::LightController;
 use rmk::split::central::{run_peripheral_manager, CentralMatrix};
 use rmk::split::rp::uart::{BufferedUart, UartInterruptHandler};
 use rmk::split::SPLIT_MESSAGE_MAX_SIZE;
-use rmk::{initialize_keymap_and_storage, run_devices, run_rmk};
+use rmk::{initialize_keymap, run_devices, run_rmk};
 use rmk::k;
 use static_cell::StaticCell;
 use vial::{VIAL_KEYBOARD_DEF, VIAL_KEYBOARD_ID};
@@ -35,8 +34,6 @@ bind_interrupts!(struct Irqs {
     USBCTRL_IRQ => InterruptHandler<USB>;
     PIO0_IRQ_0 => UartInterruptHandler<PIO0>;
 });
-
-const FLASH_SIZE: usize = 16 * 1024 * 1024;
 
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
@@ -49,9 +46,6 @@ async fn main(_spawner: Spawner) {
     // Pin config
     let (input_pins, output_pins) =
         config_matrix_pins_rp!(peripherals: p, input: [PIN_7, PIN_8, PIN_9, PIN_10], output: [PIN_12, PIN_13, PIN_14, PIN_15, PIN_16]);
-
-    // Use internal flash to emulate eeprom
-    let flash = Flash::<_, Async, FLASH_SIZE>::new(p.FLASH, p.DMA_CH0);
 
     let keyboard_usb_config = KeyboardUsbConfig {
         vid: 0xbeeb,
@@ -85,8 +79,6 @@ async fn main(_spawner: Spawner) {
         hold_timeout: Duration::from_millis(200),
     };
     behavior_config.tap_hold = tap_hold_config;
-    let mut storage_config = StorageConfig::default();
-    storage_config.clear_storage = true;
     let combos_config = CombosConfig{
         timeout: Duration::from_millis(50),
         combos: [
@@ -95,8 +87,7 @@ async fn main(_spawner: Spawner) {
         ].into_iter().collect()
     };
     behavior_config.combo = combos_config;
-    let (keymap, mut storage) =
-        initialize_keymap_and_storage(&mut default_keymap, flash, &storage_config, behavior_config).await;
+    let keymap = initialize_keymap(&mut default_keymap, behavior_config).await;
 
     // Initialize the matrix + keyboard
     let debouncer = DefaultDebouncer::<4, 5>::new();
@@ -113,7 +104,7 @@ async fn main(_spawner: Spawner) {
         ),
         keyboard.run(),
         run_peripheral_manager::<4, 5, 0, 5, _>(0, uart_receiver),
-        run_rmk(&keymap, driver, &mut storage, &mut light_controller, rmk_config),
+        run_rmk(&keymap, driver, &mut light_controller, rmk_config),
     )
     .await;
 }
