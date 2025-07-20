@@ -18,7 +18,7 @@ use rmk::split::peripheral::run_rmk_split_peripheral;
 use rmk::split::rp::uart::{BufferedUart, UartInterruptHandler};
 use rmk::split::SPLIT_MESSAGE_MAX_SIZE;
 use static_cell::StaticCell;
-use panic_probe as _;
+use panic_halt as _;
 
 bind_interrupts!(struct Irqs {
     USBCTRL_IRQ => InterruptHandler<USB>;

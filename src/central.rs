@@ -29,7 +29,7 @@ use rmk::{initialize_keymap_and_storage, run_devices, run_rmk};
 use rmk::k;
 use static_cell::StaticCell;
 use vial::{VIAL_KEYBOARD_DEF, VIAL_KEYBOARD_ID};
-use {panic_probe as _};
+use panic_halt as _;
 
 bind_interrupts!(struct Irqs {
     USBCTRL_IRQ => InterruptHandler<USB>;
