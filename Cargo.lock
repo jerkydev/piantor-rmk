@@ -470,16 +470,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "defmt-rtt"
-version = "1.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b2cac3b8a5644a9e02b75085ebad3b6deafdbdbdec04bb25086523828aa4dfd1"
-dependencies = [
- "critical-section",
- "defmt",
-]
-
-[[package]]
 name = "digest"
 version = "0.10.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1367,7 +1357,6 @@ dependencies = [
  "const-gen",
  "cortex-m-rt",
  "defmt",
- "defmt-rtt",
  "embassy-executor",
  "embassy-futures",
  "embassy-rp",

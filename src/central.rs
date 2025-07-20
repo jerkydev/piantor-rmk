@@ -7,7 +7,6 @@ mod keymap;
 mod macros;
 mod vial;
 
-use defmt::info;
 use embassy_executor::Spawner;
 use embassy_rp::bind_interrupts;
 use embassy_rp::flash::{Async, Flash};
@@ -30,7 +29,7 @@ use rmk::{initialize_keymap_and_storage, run_devices, run_rmk};
 use rmk::k;
 use static_cell::StaticCell;
 use vial::{VIAL_KEYBOARD_DEF, VIAL_KEYBOARD_ID};
-use {defmt_rtt as _, panic_probe as _};
+use {panic_probe as _};
 
 bind_interrupts!(struct Irqs {
     USBCTRL_IRQ => InterruptHandler<USB>;
@@ -41,7 +40,6 @@ const FLASH_SIZE: usize = 16 * 1024 * 1024;
 
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
-    info!("RMK start!");
     // Initialize peripherals
     let p = embassy_rp::init(Default::default());
 

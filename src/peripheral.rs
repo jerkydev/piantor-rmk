@@ -4,7 +4,6 @@
 #[macro_use]
 mod macros;
 
-use defmt::*;
 use embassy_executor::Spawner;
 use embassy_rp::bind_interrupts;
 use embassy_rp::gpio::{Input, Output};
@@ -19,7 +18,7 @@ use rmk::split::peripheral::run_rmk_split_peripheral;
 use rmk::split::rp::uart::{BufferedUart, UartInterruptHandler};
 use rmk::split::SPLIT_MESSAGE_MAX_SIZE;
 use static_cell::StaticCell;
-use {defmt_rtt as _, panic_probe as _};
+use panic_probe as _;
 
 bind_interrupts!(struct Irqs {
     USBCTRL_IRQ => InterruptHandler<USB>;
@@ -28,7 +27,6 @@ bind_interrupts!(struct Irqs {
 
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
-    info!("RMK start!");
     // Initialize peripherals
     let p = embassy_rp::init(Default::default());
 
