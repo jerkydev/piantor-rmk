@@ -13,22 +13,25 @@ use embassy_rp::gpio::{Input, Output};
 use embassy_rp::peripherals::{PIO0, USB};
 use embassy_rp::usb::{Driver, InterruptHandler};
 use embassy_time::Duration;
-use rmk::combo::Combo;
+use panic_halt as _;
 use rmk::channel::EVENT_CHANNEL;
-use rmk::config::{BehaviorConfig, CombosConfig, ControllerConfig, KeyboardUsbConfig, RmkConfig, TapHoldConfig, VialConfig};
+use rmk::combo::Combo;
+use rmk::config::{
+    BehaviorConfig, CombosConfig, ControllerConfig, KeyboardUsbConfig, RmkConfig, TapHoldConfig,
+    VialConfig,
+};
 use rmk::debounce::default_debouncer::DefaultDebouncer;
 use rmk::futures::future::join4;
 use rmk::input_device::Runnable;
+use rmk::k;
 use rmk::keyboard::Keyboard;
 use rmk::light::LightController;
 use rmk::split::central::{run_peripheral_manager, CentralMatrix};
 use rmk::split::rp::uart::{BufferedUart, UartInterruptHandler};
 use rmk::split::SPLIT_MESSAGE_MAX_SIZE;
 use rmk::{initialize_keymap, run_devices, run_rmk};
-use rmk::k;
 use static_cell::StaticCell;
 use vial::{VIAL_KEYBOARD_DEF, VIAL_KEYBOARD_ID};
-use panic_halt as _;
 
 bind_interrupts!(struct Irqs {
     USBCTRL_IRQ => InterruptHandler<USB>;
@@ -44,8 +47,7 @@ async fn main(_spawner: Spawner) {
     let driver = Driver::new(p.USB, Irqs);
 
     // Pin config
-    let (input_pins, output_pins) =
-        config_matrix_pins_rp!(peripherals: p, input: [PIN_7, PIN_8, PIN_9, PIN_10], output: [PIN_12, PIN_13, PIN_14, PIN_15, PIN_16]);
+    let (input_pins, output_pins) = config_matrix_pins_rp!(peripherals: p, input: [PIN_7, PIN_8, PIN_9, PIN_10], output: [PIN_12, PIN_13, PIN_14, PIN_15, PIN_16]);
 
     let keyboard_usb_config = KeyboardUsbConfig {
         vid: 0xbeeb,
@@ -63,9 +65,12 @@ async fn main(_spawner: Spawner) {
         ..Default::default()
     };
 
+    static TX_BUF: StaticCell<[u8; SPLIT_MESSAGE_MAX_SIZE]> = StaticCell::new();
+    let tx_buf = &mut TX_BUF.init([0; SPLIT_MESSAGE_MAX_SIZE])[..];
     static RX_BUF: StaticCell<[u8; SPLIT_MESSAGE_MAX_SIZE]> = StaticCell::new();
     let rx_buf = &mut RX_BUF.init([0; SPLIT_MESSAGE_MAX_SIZE])[..];
-    let uart_receiver = BufferedUart::new_half_duplex(p.PIO0, p.PIN_1, rx_buf, Irqs);
+    let uart_receiver =
+        BufferedUart::new_full_duplex(p.PIO0, p.PIN_0, p.PIN_1, tx_buf, rx_buf, Irqs);
 
     // Initialize the storage and keymap
     let mut default_keymap = keymap::get_default_keymap();
@@ -79,12 +84,14 @@ async fn main(_spawner: Spawner) {
         hold_timeout: Duration::from_millis(200),
     };
     behavior_config.tap_hold = tap_hold_config;
-    let combos_config = CombosConfig{
+    let combos_config = CombosConfig {
         timeout: Duration::from_millis(50),
         combos: [
-            Combo::new([k!(W), k!(E)],k!(Minus), Some(0)),
-            Combo::new([k!(E), k!(R)],k!(Equal), Some(0)),
-        ].into_iter().collect()
+            Combo::new([k!(W), k!(E)], k!(Minus), Some(0)),
+            Combo::new([k!(E), k!(R)], k!(Equal), Some(0)),
+        ]
+        .into_iter()
+        .collect(),
     };
     behavior_config.combo = combos_config;
     let keymap = initialize_keymap(&mut default_keymap, behavior_config).await;
@@ -95,7 +102,8 @@ async fn main(_spawner: Spawner) {
     let mut keyboard = Keyboard::new(&keymap);
 
     // Initialize the light controller
-    let mut light_controller: LightController<Output> = LightController::new(ControllerConfig::default().light_config);
+    let mut light_controller: LightController<Output> =
+        LightController::new(ControllerConfig::default().light_config);
 
     // Start
     join4(

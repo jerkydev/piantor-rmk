@@ -9,6 +9,7 @@ use embassy_rp::bind_interrupts;
 use embassy_rp::gpio::{Input, Output};
 use embassy_rp::peripherals::{PIO0, USB};
 use embassy_rp::usb::InterruptHandler;
+use panic_halt as _;
 use rmk::channel::EVENT_CHANNEL;
 use rmk::debounce::default_debouncer::DefaultDebouncer;
 use rmk::futures::future::join;
@@ -18,7 +19,6 @@ use rmk::split::peripheral::run_rmk_split_peripheral;
 use rmk::split::rp::uart::{BufferedUart, UartInterruptHandler};
 use rmk::split::SPLIT_MESSAGE_MAX_SIZE;
 use static_cell::StaticCell;
-use panic_halt as _;
 
 bind_interrupts!(struct Irqs {
     USBCTRL_IRQ => InterruptHandler<USB>;
@@ -32,12 +32,14 @@ async fn main(_spawner: Spawner) {
 
     // Pin config
 
-    let (input_pins, output_pins) =
-        config_matrix_pins_rp!(peripherals: p, input: [PIN_7, PIN_8, PIN_9, PIN_10], output: [PIN_16, PIN_15, PIN_14, PIN_13, PIN_12]);
+    let (input_pins, output_pins) = config_matrix_pins_rp!(peripherals: p, input: [PIN_7, PIN_8, PIN_9, PIN_10], output: [PIN_16, PIN_15, PIN_14, PIN_13, PIN_12]);
 
+    static TX_BUF: StaticCell<[u8; SPLIT_MESSAGE_MAX_SIZE]> = StaticCell::new();
+    let tx_buf = &mut TX_BUF.init([0; SPLIT_MESSAGE_MAX_SIZE])[..];
     static RX_BUF: StaticCell<[u8; SPLIT_MESSAGE_MAX_SIZE]> = StaticCell::new();
     let rx_buf = &mut RX_BUF.init([0; SPLIT_MESSAGE_MAX_SIZE])[..];
-    let uart_instance = BufferedUart::new_half_duplex(p.PIO0, p.PIN_1, rx_buf, Irqs);
+    let uart_instance =
+        BufferedUart::new_full_duplex(p.PIO0, p.PIN_1, p.PIN_0, tx_buf, rx_buf, Irqs);
 
     // Define the matrix
     let debouncer = DefaultDebouncer::<4, 5>::new();
