@@ -1,4 +1,4 @@
-use rmk::{a, k, layer, mo, mt, keycode::{ModifierCombination}, wm, action::KeyAction};
+use rmk::{a, action::KeyAction, k, keycode::ModifierCombination, layer, mo, mt, wm};
 pub(crate) const COL: usize = 10;
 pub(crate) const ROW: usize = 4;
 pub(crate) const NUM_LAYER: usize = 3;

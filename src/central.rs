@@ -8,28 +8,31 @@ mod macros;
 mod vial;
 
 use embassy_executor::Spawner;
-use embassy_rp::bind_interrupts;
-use embassy_rp::gpio::{Input, Output};
-use embassy_rp::peripherals::{PIO0, USB};
-use embassy_rp::usb::{Driver, InterruptHandler};
-use embassy_time::Duration;
-use panic_halt as _;
-use rmk::channel::EVENT_CHANNEL;
-use rmk::combo::Combo;
-use rmk::config::{
-    BehaviorConfig, CombosConfig, ControllerConfig, KeyboardUsbConfig, RmkConfig, TapHoldConfig,
-    VialConfig,
+use embassy_rp::{
+    bind_interrupts,
+    gpio::{Input, Output},
+    peripherals::{PIO0, USB},
+    usb::{Driver, InterruptHandler},
 };
-use rmk::debounce::default_debouncer::DefaultDebouncer;
-use rmk::futures::future::join4;
-use rmk::input_device::Runnable;
-use rmk::k;
-use rmk::keyboard::Keyboard;
-use rmk::light::LightController;
-use rmk::split::central::{run_peripheral_manager, CentralMatrix};
-use rmk::split::rp::uart::{BufferedUart, UartInterruptHandler};
-use rmk::split::SPLIT_MESSAGE_MAX_SIZE;
-use rmk::{initialize_keymap, run_devices, run_rmk};
+use panic_halt as _;
+use rmk::config::{
+    BehaviorConfig, ControllerConfig, KeyboardUsbConfig, RmkConfig, TapHoldConfig, VialConfig,
+};
+use rmk::{
+    channel::EVENT_CHANNEL,
+    debounce::fast_debouncer::RapidDebouncer,
+    futures::future::join4,
+    initialize_keymap,
+    input_device::Runnable,
+    keyboard::Keyboard,
+    light::LightController,
+    run_devices, run_rmk,
+    split::{
+        central::{run_peripheral_manager, CentralMatrix},
+        rp::uart::{BufferedUart, UartInterruptHandler},
+        SPLIT_MESSAGE_MAX_SIZE,
+    },
+};
 use static_cell::StaticCell;
 use vial::{VIAL_KEYBOARD_DEF, VIAL_KEYBOARD_ID};
 
@@ -74,30 +77,25 @@ async fn main(_spawner: Spawner) {
 
     // Initialize the storage and keymap
     let mut default_keymap = keymap::get_default_keymap();
+    let mut tap_hold_config = TapHoldConfig::default();
+    tap_hold_config.enable_hrm = true;
+    tap_hold_config.permissive_hold = true;
     let mut behavior_config = BehaviorConfig::default();
-    let tap_hold_config = TapHoldConfig {
-        enable_hrm: true,
-        permissive_hold: true,
-        chordal_hold: true,
-        prior_idle_time: Duration::from_millis(120),
-        post_wait_time: Duration::from_millis(0),
-        hold_timeout: Duration::from_millis(200),
-    };
     behavior_config.tap_hold = tap_hold_config;
-    let combos_config = CombosConfig {
-        timeout: Duration::from_millis(50),
-        combos: [
-            Combo::new([k!(W), k!(E)], k!(Minus), Some(0)),
-            Combo::new([k!(E), k!(R)], k!(Equal), Some(0)),
-        ]
-        .into_iter()
-        .collect(),
-    };
-    behavior_config.combo = combos_config;
+    // let combos_config = CombosConfig {
+    //     timeout: Duration::from_millis(50),
+    //     combos: [
+    //         Combo::new([k!(W), k!(E)], k!(Minus), Some(0)),
+    //         Combo::new([k!(E), k!(R)], k!(Equal), Some(0)),
+    //     ]
+    //     .into_iter()
+    //     .collect(),
+    // };
+    // behavior_config.combo = combos_config;
     let keymap = initialize_keymap(&mut default_keymap, behavior_config).await;
 
     // Initialize the matrix + keyboard
-    let debouncer = DefaultDebouncer::<4, 5>::new();
+    let debouncer = RapidDebouncer::<4, 5>::new();
     let mut matrix = CentralMatrix::<_, _, _, 0, 0, 4, 5>::new(input_pins, output_pins, debouncer);
     let mut keyboard = Keyboard::new(&keymap);
 

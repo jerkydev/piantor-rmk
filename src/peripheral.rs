@@ -5,19 +5,25 @@
 mod macros;
 
 use embassy_executor::Spawner;
-use embassy_rp::bind_interrupts;
-use embassy_rp::gpio::{Input, Output};
-use embassy_rp::peripherals::{PIO0, USB};
-use embassy_rp::usb::InterruptHandler;
+use embassy_rp::{
+    bind_interrupts,
+    gpio::{Input, Output},
+    peripherals::{PIO0, USB},
+    usb::InterruptHandler,
+};
 use panic_halt as _;
-use rmk::channel::EVENT_CHANNEL;
-use rmk::debounce::default_debouncer::DefaultDebouncer;
-use rmk::futures::future::join;
-use rmk::matrix::Matrix;
-use rmk::run_devices;
-use rmk::split::peripheral::run_rmk_split_peripheral;
-use rmk::split::rp::uart::{BufferedUart, UartInterruptHandler};
-use rmk::split::SPLIT_MESSAGE_MAX_SIZE;
+use rmk::{
+    channel::EVENT_CHANNEL,
+    debounce::fast_debouncer::RapidDebouncer,
+    futures::future::join,
+    matrix::Matrix,
+    run_devices,
+    split::{
+        peripheral::run_rmk_split_peripheral,
+        rp::uart::{BufferedUart, UartInterruptHandler},
+        SPLIT_MESSAGE_MAX_SIZE,
+    },
+};
 use static_cell::StaticCell;
 
 bind_interrupts!(struct Irqs {
@@ -42,7 +48,7 @@ async fn main(_spawner: Spawner) {
         BufferedUart::new_full_duplex(p.PIO0, p.PIN_1, p.PIN_0, tx_buf, rx_buf, Irqs);
 
     // Define the matrix
-    let debouncer = DefaultDebouncer::<4, 5>::new();
+    let debouncer = RapidDebouncer::<4, 5>::new();
     let mut matrix = Matrix::<_, _, _, 4, 5>::new(input_pins, output_pins, debouncer);
 
     // Start
