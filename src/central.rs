@@ -14,20 +14,14 @@ use embassy_rp::{
     peripherals::{PIO0, USB},
     usb::{Driver, InterruptHandler},
 };
-use embassy_time::Duration;
 use panic_halt as _;
 use rmk::{
     channel::EVENT_CHANNEL,
-    combo::Combo,
-    config::{
-        BehaviorConfig, CombosConfig, ControllerConfig, KeyboardUsbConfig, RmkConfig,
-        TapHoldConfig, TapHoldMode, VialConfig,
-    },
+    config::{BehaviorConfig, ControllerConfig, KeyboardUsbConfig, RmkConfig, VialConfig},
     debounce::fast_debouncer::RapidDebouncer,
     futures::future::join4,
     initialize_keymap,
     input_device::Runnable,
-    k,
     keyboard::Keyboard,
     light::LightController,
     run_devices, run_rmk,
@@ -81,22 +75,8 @@ async fn main(_spawner: Spawner) {
 
     // Initialize the storage and keymap
     let mut default_keymap = keymap::get_default_keymap();
-    let mut tap_hold_config = TapHoldConfig::default();
-    tap_hold_config.enable_hrm = true;
-    tap_hold_config.chordal_hold = true;
-    tap_hold_config.mode = TapHoldMode::PermissiveHold;
     let mut behavior_config = BehaviorConfig::default();
-    behavior_config.tap_hold = tap_hold_config;
-    let combos_config = CombosConfig {
-        timeout: Duration::from_millis(50),
-        combos: [
-            Combo::new([k!(W), k!(E)], k!(Minus), Some(0)),
-            Combo::new([k!(E), k!(R)], k!(Equal), Some(0)),
-        ]
-        .into_iter()
-        .collect(),
-    };
-    behavior_config.combo = combos_config;
+    behavior_config.combo = keymap::get_combo_config();
     let keymap = initialize_keymap(&mut default_keymap, behavior_config).await;
 
     // Initialize the matrix + keyboard
