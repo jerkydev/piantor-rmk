@@ -17,7 +17,10 @@ use embassy_rp::{
 use panic_halt as _;
 use rmk::{
     channel::EVENT_CHANNEL,
-    config::{BehaviorConfig, ControllerConfig, KeyboardUsbConfig, RmkConfig, VialConfig},
+    config::{
+        BehaviorConfig, ControllerConfig, KeyboardUsbConfig, RmkConfig, TapHoldConfig, TapHoldMode,
+        VialConfig,
+    },
     debounce::fast_debouncer::RapidDebouncer,
     futures::future::join4,
     initialize_keymap,
@@ -75,7 +78,12 @@ async fn main(_spawner: Spawner) {
 
     // Initialize the storage and keymap
     let mut default_keymap = keymap::get_default_keymap();
+    let mut tap_hold_config = TapHoldConfig::default();
+    tap_hold_config.enable_hrm = true;
+    // tap_hold_config.chordal_hold = true;
+    tap_hold_config.mode = TapHoldMode::PermissiveHold;
     let mut behavior_config = BehaviorConfig::default();
+    behavior_config.tap_hold = tap_hold_config;
     behavior_config.combo = keymap::get_combo_config();
     let keymap = initialize_keymap(&mut default_keymap, behavior_config).await;
 
