@@ -80,7 +80,7 @@ async fn main(_spawner: Spawner) {
     let mut default_keymap = keymap::get_default_keymap();
     let mut tap_hold_config = TapHoldConfig::default();
     tap_hold_config.enable_hrm = true;
-    // tap_hold_config.chordal_hold = true;
+    tap_hold_config.chordal_hold = true;
     tap_hold_config.mode = TapHoldMode::PermissiveHold;
     let mut behavior_config = BehaviorConfig::default();
     behavior_config.tap_hold = tap_hold_config;
